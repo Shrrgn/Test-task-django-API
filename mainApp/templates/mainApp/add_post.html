@@ -1,0 +1,20 @@
+{% extends "mainApp/wrapper.html" %}
+
+{%  load crispy_forms_tags %}
+
+{%  block content %}
+	<div class="container">
+		<h4>Create Post</h4>
+		<div class="row">
+			<div class="col-sm-6 col-sm-offset-2">
+				<form action="" method="POST">
+					{{  form.error }}
+					<!--{{ form.non_fields_errors}}-->
+					{% csrf_token %}
+					{{  form|crispy }}
+					<input type="submit" class="btn btn-success" value="Add">
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

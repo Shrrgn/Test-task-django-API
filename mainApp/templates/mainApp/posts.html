@@ -1,0 +1,15 @@
+{%  extends "mainApp/wrapper.html" %}
+
+{% block content %}
+    {% for i in posts %}
+        <div class="span8">
+            <h1><a href="{%  url 'post_detail' i.slug %}">{{ i.title }}</a></h1>
+                
+            <div>
+                <span class="badge badge-success">Posted at {{ i.published }}</span>
+                <span class="pull-right">Posted by <a href="#">{{ i.author.username }}</a></span>
+            </div> 
+            <hr>
+        </div>
+    {% endfor %}
+{%  endblock %}

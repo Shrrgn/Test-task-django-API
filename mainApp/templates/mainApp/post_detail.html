@@ -1,0 +1,13 @@
+{%  extends "mainApp/wrapper.html" %}
+
+{% block content %}
+        <div class="span8">
+            <h3 align="center">{{ post.title }}</h3>
+            <div>
+                <p>{{ post.content|linebreaks }}</p>
+                <span class="badge badge-success">Posted at {{ post.published }}</span>
+                <span class="pull-right">Posted by <a href="#">{{ post.get_author }}</a></span>
+            </div> 
+            <hr>
+        </div>
+{%  endblock %}
