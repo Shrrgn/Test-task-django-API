@@ -4,11 +4,13 @@ from mainApp.views import (IndexView,
 							PostDetailView,
 							RegistrationView,
 							LoginView,
-							PostCreateView)
+							PostCreateView,
+							LikeDislikeView)
 from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
 
 urlpatterns = [
+	path('like_dislike/', LikeDislikeView.as_view(), name = 'like_dislike'),
 	path('posts/add/', PostCreateView.as_view(), name = 'add_post'),
 	path('logout/', LogoutView.as_view(next_page = reverse_lazy('index')), name = 'logout_action'),
 	path('login/', LoginView.as_view(), name = 'login_action'),

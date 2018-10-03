@@ -1,13 +1,79 @@
 {%  extends "mainApp/wrapper.html" %}
 
 {% block content %}
-        <div class="span8">
+		<!--Content-->
+        <div class="span8" id="post" data-id="{{ post.id }}">
             <h3 align="center">{{ post.title }}</h3>
             <div>
                 <p>{{ post.content|linebreaks }}</p>
                 <span class="badge badge-success">Posted at {{ post.published }}</span>
                 <span class="pull-right">Posted by <a href="#">{{ post.get_author }}</a></span>
             </div> 
-            <hr>
         </div>
+
+        <!--Likes/Dislikes-->
+        <br>
+        <a href="#" id="like">
+			<span class="glyphicon glyphicon-thumbs-up" style="color: green;"></span>
+		</a>
+		<span id="liked">{{ post.likes }}</span>
+		
+		<a href="#" id="dislike" style="padding-left: 25px;">
+			<span class="glyphicon glyphicon-thumbs-down" style="color: red"></span>
+		</a>
+		<span id="disliked">{{ post.dislikes }}</span>
+
+		<br><br>
+		<hr>
+
+		<!--Like/Dislike action-->
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$('#like').on('click', function(e){
+				e.preventDefault()
+				var like = 'like'
+				var post_detail_id = $('#post').attr('data-id')
+
+				data = {
+					post_detail_id:post_detail_id,
+					like:like
+				}
+
+				$.ajax({
+					type:"GET",
+					url:"{% url 'like_dislike' %}",
+					dataType:"json",
+					data:data,
+					success: function(data){
+						$('#liked').html(data.like)
+						$('#disliked').html(data.dislike)
+					}
+				})
+			})
+		})
+
+		$(document).ready(function(){
+			$('#dislike').on('click', function(e){
+				e.preventDefault()
+				var dislike = 'dislike'
+				var post_detail_id = $('#post').attr('data-id')
+
+				data = {
+					post_detail_id:post_detail_id,
+					dislike:dislike
+				}
+
+				$.ajax({
+					type:"GET",
+					url:"{% url 'like_dislike' %}",
+					dataType:"json",
+					data:data,
+					success: function(data){
+						$('#liked').html(data.like)
+						$('#disliked').html(data.dislike)
+					}
+				})
+			})
+		})
+	</script>
 {%  endblock %}

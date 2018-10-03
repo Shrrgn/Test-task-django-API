@@ -15,6 +15,7 @@ class Post(models.Model):
 	likes = models.PositiveIntegerField(default = 0)
 	dislikes = models.PositiveIntegerField(default = 0)
 	author = models.ForeignKey('auth.User', on_delete = models.CASCADE)
+	reaction = models.ManyToManyField('auth.User', blank = True, related_name = 'user_reaction_for_post')
 
 	class Meta:
 		ordering = ["-published"]

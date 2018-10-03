@@ -120,6 +120,32 @@ class PostCreateView(View):
 				
 		return render(self.request, self.template_name, {'form':form})
 
+class LikeDislikeView(View):
+
+	template_name = 'mainApp/post_detail.html'
+
+	def get(self, request, *args, **kwargs):
+		post_detail_id = self.request.GET.get('post_detail_id')
+		post = Post.objects.get(id = post_detail_id)
+		like = self.request.GET.get('like')
+		dislike = self.request.GET.get('dislike')
+		
+		if like and (request.user not in post.reaction.all()):
+			post.likes += 1 
+			post.reaction.add(request.user)
+			post.save()
+		
+		if dislike and (request.user not in post.reaction.all()):
+			post.dislikes += 1 
+			post.reaction.add(request.user)
+			post.save()
+		
+		data = {
+			'like':post.likes,
+			'dislike':post.dislikes 
+		}
+
+		return JsonResponse(data)
 
 
 
