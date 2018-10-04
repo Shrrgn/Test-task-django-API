@@ -115,12 +115,3 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 		return data
 			
-
-
-
-
-
-
-
-
-
