@@ -2,8 +2,10 @@ from django import forms
 from django.contrib.auth import get_user_model
 from mainApp.models import Post
 from mainApp.utils import checking_password
+from pyhunter import PyHunter
 
 User = get_user_model()
+hunter = PyHunter('4be2d3f192d024c353cb0bf14356cd6de53b0a02')
 
 class RegistrationForm(forms.ModelForm):
 
@@ -52,9 +54,17 @@ class RegistrationForm(forms.ModelForm):
 		return username
 
 	def clean_email(self):
-		if User.objects.filter(email = self.cleaned_data['email']):
+		email = self.cleaned_data['email']
+
+		if User.objects.filter(email = email):
 			raise forms.ValidationError('User with that email already exists!')
-		return self.cleaned_data['email']
+
+		#It works really bad so using that API is risky
+		verify = hunter.email_verifier(email)
+		if verify['result'] == 'invalid':
+			raise forms.ValidationError('This email does not exist!')
+
+		return email
 
 
 class LoginForm(forms.Form):
