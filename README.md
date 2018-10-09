@@ -1,6 +1,6 @@
 # Test-task-django-API
 
-##Little project:
+## Little project:
 * models: Post, User;
 * views: user creation, post creation, login, registration, posts;
 * can make like/dislike action;
