@@ -6,12 +6,9 @@ from django.contrib.auth import get_user_model
 from django.template.defaultfilters import slugify
 from django.db.models import Max
 from mainApp.models import Post
+from testingAPI.settings import BOT_INFO
 
 User = get_user_model()
-
-NUMBER_OF_USERS = 3
-MAX_POSTS_PER_USER = 2
-MAX_LIKES_PER_USER = 3
 
 LOGINS_FILE = "D:\\ZProgramming\\Python\\dj\\testingAPI\\static\\logins.txt"
 URL = "https://www.livejournal.com/media/razvlecheniya/?page=1"
@@ -21,9 +18,9 @@ URL = "https://www.livejournal.com/media/razvlecheniya/?page=1"
 class Bot:
 	'''Automated bot for making users, posts and give likes'''
 
-	def __init__(self, number_of_users = NUMBER_OF_USERS, 
-						max_posts_per_user = MAX_POSTS_PER_USER, 
-						max_likes_per_user = MAX_LIKES_PER_USER):
+	def __init__(self, number_of_users = BOT_INFO['NUMBER_OF_USERS'], 
+						max_posts_per_user = BOT_INFO['MAX_POSTS_PER_USER'], 
+						max_likes_per_user = BOT_INFO['MAX_LIKES_PER_USER']):
 		
 		self.number_of_users = number_of_users 
 		self.max_posts_per_user = max_posts_per_user

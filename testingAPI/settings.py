@@ -90,6 +90,12 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
 }
 
+BOT_INFO = {
+    'NUMBER_OF_USERS': 3,
+    'MAX_POSTS_PER_USER': 3,
+    'MAX_LIKES_PER_USER': 3,
+}
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
