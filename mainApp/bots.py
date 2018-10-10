@@ -7,7 +7,6 @@ from django.template.defaultfilters import slugify
 from django.db.models import Max
 from mainApp.models import Post
 
-
 User = get_user_model()
 
 NUMBER_OF_USERS = 3
@@ -20,6 +19,7 @@ URL = "https://www.livejournal.com/media/razvlecheniya/?page=1"
 
 
 class Bot:
+	'''Automated bot for making users, posts and give likes'''
 
 	def __init__(self, number_of_users = NUMBER_OF_USERS, 
 						max_posts_per_user = MAX_POSTS_PER_USER, 
@@ -31,8 +31,7 @@ class Bot:
 		self.url = URL
 
 	def __str__(self):
-		return f"Bot create {self.number_of_users} users, max posts per user {self.max_posts_per_user} \
-							max likes per user for posts {self.max_likes_per_user}"
+		return f"Bot creates {self.number_of_users} users, {self.max_posts_per_user} posts per user {self.max_posts_per_user} likes per user for posts"
 
 
 	def get_usernames(self, file):
@@ -47,8 +46,6 @@ class Bot:
 		
 				if not User.objects.filter(username = user).exists():
 					usernames.append(user)
-				else:
-					continue
 		
 		except (NameError, EOFError, OSError) as e:
 			print(e)
@@ -67,7 +64,7 @@ class Bot:
 
 		return html.fromstring(response.text)
 
-	def get_posts_links(self):
+	def get_posts_data(self):
 		url = self.url
 		posts_data = {}
 
@@ -75,64 +72,64 @@ class Bot:
 			links = self.get_html(url).xpath("//h3/a/@href")
 
 			for i in self.get_html(url).xpath("//h3/a"):
-				if i.items()[0][1]: #doesn't work on server shell
+				if i.items()[0][1]: 
 					data = self.get_html(i.items()[0][1]).xpath("//title/text() | //div[starts-with(@class, 'mdspost-text-cont')]/div")
-					#if everything is ok
+					
 					if not Post.objects.filter(title = data[0]).exists():
-						posts_data[data[0]] = data[1].text_content()
+						posts_data[str(data[0])] = data[1].text_content()
+					
 					if len(posts_data) == self.max_posts_per_user:
 						return posts_data
-				else:
-					continue
 			else:
 				position = url.find('=') + 1
 				url = url.replace(url[position:], str(int(url[position:]) + 1))
 
-	def get_posts_data(self):
-		posts = {}
-		for i in self.get_posts_links():
-			html = self.get_html(i)
-			posts[html.title.string] = html.find(attrs = {'class':'mdspost-text'}).get_text()
-
-		return posts
-
-
-	def creation(self):
-		users = self.get_usernames(LOGINS_FILE)
-		for i in users:
-			u = User.objects.create(username = i, email = f"{i}@i.ua")
-			u.set_password(f"{i}777+")
-			u.save()
-			self.make_likes(u)
-			u.save()
-
-		'''
-		for i in users:
-			for title,text in self.get_posts_data().items():
-				p = Post.objects.create(title = title,
-										slug = slugify(title),
-										content = text,
-										author = User.objects.get(username = i))
-				p.save()
-		'''
-		print('Done!')
+	def make_posts(self, user):
+		for title,text in self.get_posts_data().items():
+			p = Post.objects.create(
+					title = title,
+					slug = slugify(title),#doesn't work because of type class????
+					content = text,
+					author = User.objects.get(username = user)
+			)
+			print(f"{p} was created with slug:{p.slug}")
+			p.save()
 
 	def make_likes(self, user):
 		max_post_id = Post.objects.all().aggregate(Max('id'))
 		counter = 0
+		
 		while counter != self.max_likes_per_user:
 			try:
 				post = Post.objects.get(id = random.randint(0, max_post_id['id__max']))
+			
 			except Post.DoesNotExist as e:
-				continue
+				pass
+			
 			else:
 				if user not in post.reaction.all():
-					print(post)
+					print(f"{post} liked")
 					post.likes += 1
 					post.reaction.add(user)
 					post.save()
 					counter += 1
 
+
+	def creation(self):
+		users = self.get_usernames(LOGINS_FILE)
+		
+		for i in users:
+			user = User.objects.create(username = i, email = f"{i}@i.ua")
+			user.set_password(f"{i}777+")
+			user.save()
+			print(user)
+			
+			self.make_posts(user)
+			self.make_likes(user)
+			
+			user.save()
+
+		print('Done!')
 
 	def main(self):
 		start = datetime.now()
