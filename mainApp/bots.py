@@ -85,11 +85,11 @@ class Bot:
 		for title,text in self.get_posts_data().items():
 			p = Post.objects.create(
 					title = title,
-					slug = slugify(title),#doesn't work because of type class????
 					content = text,
 					author = User.objects.get(username = user)
 			)
-			print(f"{p} was created with slug:{p.slug}")
+			p.slug = f"unreadable-title-{p.id}"
+			print(f"{p}")
 			p.save()
 
 	def make_likes(self, user):
