@@ -2,6 +2,7 @@ import random
 import requests
 from datetime import datetime
 from lxml import html
+from fake_useragent import UserAgent
 from django.contrib.auth import get_user_model
 from django.template.defaultfilters import slugify
 from django.db.models import Max
@@ -54,8 +55,10 @@ class Bot:
 
 	def get_html(self, url):
 		response = None
+		proxies = {'http': 'http://91.221.252.18'}
+		
 		try:
-			response = requests.get(url)
+			response = requests.get(url, headers = {'User-Agent':UserAgent().random}, proxies = proxies)
 		except requests.exceptions.MissingSchema as e:
 			print(e)
 
